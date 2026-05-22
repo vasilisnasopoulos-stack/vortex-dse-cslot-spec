@@ -64,7 +64,7 @@ class CSlotSystem {
     return { accepted: true, reason: "ok" };
   }
 
-  // Crash: lose volatile state, mmap snapshot survives.
+  // Crash: lose volatile state, persistent snapshot survives.
   crash(nodeId) {
     const n = this.nodes[nodeId];
     n.persisted = new Set(n.processed);
@@ -72,7 +72,7 @@ class CSlotSystem {
     n.up = false;
   }
 
-  // Rejoin: recover from mmap snapshot.
+  // Rejoin: recover from persistent snapshot.
   rejoin(nodeId) {
     const n = this.nodes[nodeId];
     n.processed = new Set(n.persisted);
@@ -126,7 +126,7 @@ S("S5_same_slot_two_nodes", "Same tx, different nodes, same slot → BOTH accept
   return r1.accepted && r2.accepted;
 });
 
-S("S6_crash_rejoin_preserves", "Crash + Rejoin restores processed set from mmap", () => {
+S("S6_crash_rejoin_preserves", "Crash + Rejoin restores processed set from persistent snapshot", () => {
   const sys = new CSlotSystem(["n1"]);
   sys.submit("tx1");
   sys.process("n1", sys.network[0]);
