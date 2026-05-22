@@ -76,7 +76,7 @@ Finished in 38s.
 - `TypeInvariant`
 - `CSlotStrictAdmission` — the headline rule
 - `ExactlyOncePerNode`
-- `PersistedReflectsReality` — mmap snapshot never invents
+- `PersistedReflectsReality` — persistent snapshot never invents
 - `NoPhantomProcess`
 - `DecisionLocalityOnly`
 - `NoLateAdmission` — distinguishes from a TTL window
