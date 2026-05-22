@@ -1,0 +1,16 @@
+==============================================================================================================
+Vortex DSE  C-slot reference implementation  scenario suite
+==============================================================================================================
+PASS  S1_ontime                                 On-time delivery (m.cslot = current_slot) → accepted
+PASS  S2_one_slot_late                          Delivery 1 slot late → REJECTED (permanent)
+PASS  S3_future_dated                           Future-dated injection (m.cslot > current_slot) → REJECTED
+PASS  S4_duplicate_same_node                    Same tx, same node, twice → second REJECTED (exactly-once)
+PASS  S5_same_slot_two_nodes                    Same tx, different nodes, same slot → BOTH accepted (per-node exactly-once)
+PASS  S6_crash_rejoin_preserves                 Crash + Rejoin restores processed set from mmap
+PASS  S7_no_double_after_rejoin                 After rejoin, replay of same tx → REJECTED (no double-process)
+PASS  S8_replay_past_cslot                      Adversary replays tx with past cslot → REJECTED (late)
+PASS  S9_future_injection_waits_then_admits     Injection cslot=k while slot<k; when slot reaches k → ADMITS (legitimate delayed delivery, not exploit)
+PASS  S10_down_node_rejects                     Crashed node rejects all incoming until rejoin
+--------------------------------------------------------------------------------------------------------------
+10/10 scenarios passed, 0 failed
+==============================================================================================================
