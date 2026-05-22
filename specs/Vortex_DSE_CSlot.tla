@@ -15,7 +15,7 @@
 (* Async hostile environment modeled:                                       *)
 (*   - arbitrary message reordering (network is a SET),                     *)
 (*   - unbounded delivery delay (Process is nondeterministic),              *)
-(*   - node crashes and rejoins (state survives only via mmap snapshot),   *)
+(*   - node crashes and rejoins (state survives only via the persistent snapshot),   *)
 (*   - adversarial duplicate injection (replay attack).                     *)
 (*                                                                          *)
 (* T_0 = 0 by normalization. We model integer slots directly: each ts is   *)
@@ -41,7 +41,7 @@ VARIABLES
     \* @type: Str -> Set(Str);
     processed,           \* processed[n] = msg ids node n has admitted
     \* @type: Str -> Set(Str);
-    persisted,           \* persisted[n] = mmap snapshot (survives crash)
+    persisted,           \* persisted[n] = persistent snapshot (survives crash)
     \* @type: Str -> Str;
     node_state           \* node_state[n] \in {"up", "down"}
 
@@ -86,7 +86,7 @@ Process(n, m) ==
     /\ processed' = [processed EXCEPT ![n] = @ \cup {m.id}]
     /\ UNCHANGED <<current_slot, network, persisted, node_state>>
 
-\* CRASH: node loses RAM. mmap snapshot in `persisted` survives.
+\* CRASH: node loses RAM. persistent snapshot in `persisted` survives.
 Crash(n) ==
     /\ n \in Nodes
     /\ node_state[n] = "up"
@@ -95,7 +95,7 @@ Crash(n) ==
     /\ processed'  = [processed  EXCEPT ![n] = {}]
     /\ UNCHANGED <<current_slot, network>>
 
-\* REJOIN: node recovers from mmap snapshot. processed = persisted.
+\* REJOIN: node recovers from persistent snapshot. processed = persisted.
 Rejoin(n) ==
     /\ n \in Nodes
     /\ node_state[n] = "down"
@@ -159,7 +159,7 @@ CSlotStrictAdmission ==
         \E m \in network : m.id = id /\ m.cslot <= current_slot
 
 \* I3: PERSISTED REFLECTS REALITY.
-\* mmap snapshot never invents ids that were not in the network.
+\* persistent snapshot never invents ids that were not in the network.
 PersistedReflectsReality ==
     \A n \in Nodes :
         node_state[n] = "down" =>
