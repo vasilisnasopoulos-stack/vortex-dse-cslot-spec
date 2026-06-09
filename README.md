@@ -10,6 +10,24 @@ production implementation, benchmark internals) are out of scope of this repo.
 
 ---
 
+> **Note — which admission variant this repo models, and where the proofs are.**
+>
+> This repo specifies the **strict** C-slot rule: one bucket late → permanent
+> reject (`admit ⟺ tx.cslot = node.current_slot`). In the reference
+> implementation this strict behaviour is the **opt-in TTL window**, *not* the
+> default build. The **default** build is **late-tolerant**: a late message is
+> admitted into its own (earlier) slot rather than dropped
+> (`admit ⟺ tx.cslot ≤ node.current_slot`); nothing is lost.
+>
+> Deductive, **machine-checked TLAPS proofs** of the default (late-tolerant)
+> model — `[]TypeInvariant` and `[]NoFutureAdmission`, all 194 obligations
+> proved — live in the companion repo:
+> **[vortex-dse-cslot-proofs](https://github.com/vasilisnasopoulos-stack/vortex-dse-cslot-proofs)**.
+> The results in *this* repo are established by model checking (TLC + Apalache),
+> not by deductive proof.
+
+---
+
 ## What this is
 
 The C-slot rule, in one line:
