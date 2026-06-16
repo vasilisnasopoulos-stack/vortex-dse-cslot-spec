@@ -1,3 +1,9 @@
+> **Vortex public research bundle**
+>
+> This repository is one part of the public Vortex DSE verification bundle.
+>
+> [Spec](https://github.com/vasilisnasopoulos-stack/vortex-dse-cslot-spec) · [Proofs](https://github.com/vasilisnasopoulos-stack/vortex-dse-cslot-proofs) · [Merkle Agreement](https://github.com/vasilisnasopoulos-stack/vortex-merkle-agreement)
+
 # Vortex DSE — C-Slot Strict Admission
 
 Formal specification and executable reference implementation for the **strict** C-slot admission rule used as one public Vortex DSE verification artifact.
