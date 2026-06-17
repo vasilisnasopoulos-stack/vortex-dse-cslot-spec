@@ -10,6 +10,12 @@
 
 # Vortex DSE — C-Slot Strict Admission
 
+> **Slice:** this repo checks **strict C-slot admission** (`m.cslot = current_slot`) and
+> the Skew adversary variant — **not** the default late-tolerant model (see
+> [proofs repo](https://github.com/vasilisnasopoulos-stack/vortex-dse-cslot-proofs)),
+> not agreement, and not end-to-end composition.
+> [Public slice map →](https://github.com/vasilisnasopoulos-stack/blob/main/SLICES.md)
+
 Formal specification and executable reference implementation for the **strict** C-slot admission rule used as one public Vortex DSE verification artifact.
 
 **Author:** Vasilis Nasopoulos

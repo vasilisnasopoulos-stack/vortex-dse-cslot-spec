@@ -1,5 +1,12 @@
 # Vortex DSE Architecture & Formal Specs
 
+> **Slice notice:** this document sketches the **full research stack** for orientation.
+> **This repository publishes only the admission slice** (`Vortex_DSE_CSlot.tla`,
+> `Vortex_DSE_CSlot_Skew.tla`). Layers shown below that are not in this repo are
+> either another [public slice](https://github.com/vasilisnasopoulos-stack/blob/main/SLICES.md)
+> or **private / not on GitHub**. Nothing in this file implies every box is
+> machine-checked in the public bundle.
+
 ## System Overview
 
 ```
