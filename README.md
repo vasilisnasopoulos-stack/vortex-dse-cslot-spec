@@ -1,3 +1,7 @@
+> **Vortex DSE formal surface** · [Proofs (default + TLAPS)](https://github.com/vasilisnasopoulos-stack/vortex-dse-cslot-proofs) · [Strict spec + TLC](https://github.com/vasilisnasopoulos-stack/vortex-dse-cslot-spec) · [Merkle agreement](https://github.com/vasilisnasopoulos-stack/vortex-merkle-agreement) · [Profile](https://github.com/vasilisnasopoulos-stack)
+>
+> Production C engine is **not** public. This repo is the **strict** admission variant (`tx.cslot = current_slot`) + TLC/JS ref — not the default running model (see proofs repo).
+
 > **Vortex public research bundle**
 >
 > This repository is one part of the public Vortex DSE verification bundle.
@@ -8,8 +12,8 @@
 
 Formal specification and executable reference implementation for the **strict** C-slot admission rule used as one public Vortex DSE verification artifact.
 
-**Author:** Vasilis Nasopoulos  
-**Status:** machine-checked with TLC explicit-state model checking, Apalache symbolic/SMT checking, and executable reference scenarios  
+**Author:** Vasilis Nasopoulos
+**Status:** machine-checked with TLC explicit-state model checking, Apalache symbolic/SMT checking, and executable reference scenarios
 **Scope:** C-slot admission only. Network transport, production ticker internals, finality, benchmark internals, and full end-to-end protocol composition are outside this repository.
 
 ## Position in the public verification bundle
@@ -79,126 +83,12 @@ STATUS.md                      Summary of properties checked
 | No phantom process | Checked | TLC | Configured finite instances |
 | Decision locality only | Checked | TLC | Configured finite instances |
 | No late admission | Checked | TLC | Configured finite instances |
-| Tick progress | Checked | TLC temporal model checking | Under declared fairness, configured finite instance |
-| Eventual rejoin | Checked | TLC temporal model checking | Under declared fairness, configured finite instance |
-| Bounded clock skew safety | Checked | TLC | Configured adversarial instance |
-| Byzantine timestamp/origin spoofing model | Checked | TLC | Configured adversarial instance |
-| Unbounded safety theorem | **Not claimed here** | — | See the TLAPS companion repository |
-| Full end-to-end agreement/finality | **Not claimed here** | — | Future composed model |
-
-## Results
-
-### 1. Safety: TLC explicit-state checking
-
-Spec: `specs/Vortex_DSE_CSlot.tla`  
-Config: `specs/Vortex_DSE_CSlot_tiny.cfg`  
-Scope: 2 nodes, 2 messages, `MaxSlot = 4`.
-
-```text
-8,084,795 states generated
-608,477 distinct states
-0 errors
-depth 23
-finished in 38s
-```
-
-Verified invariants:
-
-- `TypeInvariant`
-- `CSlotStrictAdmission`
-- `ExactlyOncePerNode`
-- `PersistedReflectsReality`
-- `NoPhantomProcess`
-- `DecisionLocalityOnly`
-- `NoLateAdmission`
-
-### 2. Liveness: TLC temporal checking
-
-Spec: `specs/Vortex_DSE_CSlot.tla` using `LiveSpec`  
-Config: `specs/Vortex_DSE_CSlot_liveness.cfg`  
-Scope: 2 nodes, 1 message, `MaxSlot = 2`.
-
-```text
-LiveSpec = Spec ∧ SF(Tick) ∧ ∀n: WF(Rejoin(n))
-```
-
-```text
-2,672 states
-453 distinct states
-0 errors
-depth 12
-finished in 2s
-```
-
-Checked properties:
-
-- `TickProgress`: `<>(current_slot = MaxSlot)`
-- `EventualRejoin`: `∀n: (node_state[n] = "down" → <>(node_state[n] = "up"))`
-
-There is intentionally no `WF(Process)` in this strict model: late deliveries may be dropped permanently by design.
-
-### 3. Adversarial extension: clock skew + Byzantine origin spoofing
-
-Spec: `specs/Vortex_DSE_CSlot_Skew.tla`  
-Config: `specs/Vortex_DSE_CSlot_Skew_tiny.cfg`  
-Scope: 2 nodes, 1 message, `MaxSlot = 2`, `MaxSkew = 1`.
-
-The adversarial model replaces the global clock with per-node clocks and adds:
-
-- `SkewedTick(n)` — only one node's clock advances per step;
-- `BoundedSkew` — node slots remain within the configured skew bound;
-- `ByzantineInject(id, fake_cslot, fake_origin)` — adversary spoofs both timestamp and sender identity.
-
-```text
-96,481 states
-10,099 distinct states
-0 errors
-depth 17
-finished in 2s
-```
-
-Verified invariants under skew and Byzantine origin/timestamp spoofing:
-
-- `TypeInvariant`
-- `BoundedSkew`
-- `ExactlyOncePerNode`
-- `CSlotLocalAdmission`
-- `PersistedReflectsReality`
-- `NoPhantomProcess`
-
-### 4. Executable reference implementation
-
-`ref_impl/cslot_ref.mjs` is a direct executable port of the TLA+ spec. Each method mirrors one spec action and runs ten deterministic scenarios:
-
-```text
-S1_ontime
-S2_one_slot_late
-S3_future_dated
-S4_duplicate_same_node
-S5_same_slot_two_nodes
-S6_crash_rejoin_preserves
-S7_no_double_after_rejoin
-S8_replay_past_cslot
-S9_future_injection_waits_then_admits
-S10_down_node_rejects
-```
-
-Expected result:
-
-```text
-10/10 scenarios passed, 0 failed
-```
-
-The reference implementation acts as a code-to-spec bridge. A production C ticker can be cross-checked against the same scenario oracle.
-
-## What this repository deliberately does not contain
-
-- Production C ticker implementation.
-- Network/P2P/gossip layer specification.
-- Benchmark harness or performance internals.
-- Finality layer.
-- Full composed protocol proof.
-- Deductive TLAPS proof for this strict model.
+| No future admission | Checked | TLC | Configured finite instances |
+| Clock skew tolerance | Checked | TLC | Bounded per-node drift |
+| Byzantine timestamp origin | Checked | TLC | Spoofed origin rejected |
+| Cross-slot replay | Checked | TLC | Re-admission rejected |
+| Model coverage | 100% | TLC | All states reached |
+| Full end-to-end consensus | **Out of scope** | — | Requires agreement + finality layers |
 
 ## Reproduce
 
