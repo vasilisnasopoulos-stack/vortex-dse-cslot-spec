@@ -14,7 +14,7 @@
 > variant `m.cslot = current_slot` + Skew adversary) — not the default model
 > ([proofs repo](https://github.com/vasilisnasopoulos-stack/vortex-dse-cslot-proofs)).
 > Same machine, different admission part.
-> [How the parts connect →](https://github.com/vasilisnasopoulos-stack/blob/main/SLICES.md)
+> [How the parts connect →](https://github.com/vasilisnasopoulos-stack/vasilisnasopoulos-stack/blob/main/SLICES.md)
 
 Formal specification and executable reference implementation for the **strict** C-slot admission rule used as one public Vortex DSE verification artifact.
 
