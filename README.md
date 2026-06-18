@@ -10,16 +10,16 @@
 
 # Vortex DSE — C-Slot Strict Admission
 
-> **Slice:** this repo checks **strict C-slot admission** (`m.cslot = current_slot`) and
-> the Skew adversary variant — **not** the default late-tolerant model (see
-> [proofs repo](https://github.com/vasilisnasopoulos-stack/vortex-dse-cslot-proofs)),
-> not agreement, and not end-to-end composition.
-> [Public slice map →](https://github.com/vasilisnasopoulos-stack/blob/main/SLICES.md)
+> **Part of one machine:** this repo checks the **admission layer** (strict
+> variant `m.cslot = current_slot` + Skew adversary) — not the default model
+> ([proofs repo](https://github.com/vasilisnasopoulos-stack/vortex-dse-cslot-proofs)).
+> Same machine, different admission part.
+> [How the parts connect →](https://github.com/vasilisnasopoulos-stack/blob/main/SLICES.md)
 
 Formal specification and executable reference implementation for the **strict** C-slot admission rule used as one public Vortex DSE verification artifact.
 
 **Author:** Vasilis Nasopoulos
-**Status:** machine-checked with TLC explicit-state model checking, Apalache symbolic/SMT checking, and executable reference scenarios
+**Status:** machine-checked with TLC explicit-state model checking and executable reference scenarios (JavaScript port)
 **Scope:** C-slot admission only. Network transport, production ticker internals, finality, benchmark internals, and full end-to-end protocol composition are outside this repository.
 
 ## Position in the public verification bundle
@@ -27,7 +27,7 @@ Formal specification and executable reference implementation for the **strict** 
 | Repository | Role | Verification status |
 |---|---|---|
 | [vortex-dse-cslot-proofs](https://github.com/vasilisnasopoulos-stack/vortex-dse-cslot-proofs) | Late-tolerant C-slot admission; deductive safety proofs | TLAPS: `[]TypeInvariant`, `[]NoFutureAdmission`; all 194 obligations proved |
-| **vortex-dse-cslot-spec** ← you are here | Strict C-slot admission, clock skew, Byzantine timestamp/origin spoofing, executable reference | TLC + Apalache bounded checks; JavaScript reference scenarios |
+| **vortex-dse-cslot-spec** ← you are here | Strict C-slot admission, clock skew, Byzantine timestamp/origin spoofing, executable reference | TLC bounded checks; JavaScript reference scenarios |
 | [vortex-merkle-agreement](https://github.com/vasilisnasopoulos-stack/vortex-merkle-agreement) | Per-slot input-set agreement: Freeze → Reconcile → Commit | TLC + Apalache bounded checks under declared assumptions |
 
 ## Strict vs late-tolerant admission
@@ -83,7 +83,7 @@ STATUS.md                      Summary of properties checked
 
 | Claim | Status | Method | Scope |
 |---|---|---|---|
-| Strict same-slot admission | Checked | TLC + Apalache | Configured finite instances |
+| Strict same-slot admission | Checked | TLC | Configured finite instances |
 | Exactly once per node | Checked | TLC | Configured finite instances |
 | Persistent snapshot does not invent ids | Checked | TLC | Configured finite instances |
 | No phantom process | Checked | TLC | Configured finite instances |

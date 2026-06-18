@@ -11,8 +11,9 @@ out of scope and not part of this repository.
 ## Verification methods used
 
 - **TLC** (explicit-state, breadth-first model checking)
-- **Apalache** (symbolic SMT, bounded depth)
 - **Reference implementation** (executable JavaScript port of the spec)
+
+Apalache harness for the Skew spec is **not shipped in this repo** — see Open / next.
 
 ## Results
 
